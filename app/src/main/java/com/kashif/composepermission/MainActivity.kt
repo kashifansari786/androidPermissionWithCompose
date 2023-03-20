@@ -1,43 +1,61 @@
-package com.kashif.composepermission
+ package com.kashif.composepermission
 
+import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
-import com.kashif.composepermission.ui.theme.ComposePermissionTheme
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kashif.composepermission.ui.theme.PermissionsGuideComposeTheme
+import com.kashif.composepermission.viewModel.MainViewModel
+import kotlin.contracts.contract
 
-class MainActivity : ComponentActivity() {
+ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ComposePermissionTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Greeting("Android")
+            PermissionsGuideComposeTheme {
+               val viewModel = viewModel<MainViewModel>()
+                val dialogQueue=viewModel.visiblePermissionDialogQueue
+
+                val cameraPermissionResultLauncher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.RequestPermission(),
+                    onResult = {isGranted ->
+                        viewModel.onPermissionResult(
+                            permission = Manifest.permission.CAMERA,
+                            isGranted=isGranted
+                        )
+
+                    }
+                )
+                Column(modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                    Button(onClick = { cameraPermissionResultLauncher.launch(
+                        Manifest.permission.CAMERA
+                    )}) {
+                        Text(text = "Request one Permission")
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = "Request multiple Permission")
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ComposePermissionTheme {
-        Greeting("Android")
     }
 }
