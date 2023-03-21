@@ -28,8 +28,8 @@ This project demonstrates the use of the following:
 
 	1.Clone the repository using the following command:
 	
-	
-![Screenshot of a clone clode](https://user-images.githubusercontent.com/26251022/226552170-d8d20dff-3045-4601-9d94-9b6ffc0e6a26.png)
+git clone git@github.com:kashifansari786/androidPermissionWithCompose.git
+
 
 	2.Open Android Studio and select "Open an existing Android Studio project"
 	
